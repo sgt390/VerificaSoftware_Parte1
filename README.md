@@ -28,3 +28,11 @@ f<sub>k</sub>(x<sub>1</sub>, ..., x<sub>a<sub>k</sub></sub>) = t<sub>k</sub>
 4. I termini t<sub>i</sub> possono contenere f<sub>i</sub>(ricorsione)
 5. t<sub>i</sub> è la definizione di f<sub>i</sub>
 6. call by name (scelta personale)
+
+
+
+            Example (less then)
+            --lt :: a -> a -> Bool
+            lt a b = lt1 (a-b) (a-b)
+            --lt1 :: a -> a -> Bool
+            lt1 a b = if b==0 then False else (if a==0 then True else (lt1 (a+1) (b-1)))
