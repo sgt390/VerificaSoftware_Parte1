@@ -1,5 +1,4 @@
-# VerificaSoftware_Parte1
-Project 17 -- Interprete per il linguaggio REC (call by name)
+# REC
 ## Sintassi
 ### Considerazioni
 1. n: N numeri interi positivi e negativi
