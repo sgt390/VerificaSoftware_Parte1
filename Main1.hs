@@ -13,3 +13,5 @@ debugp = \input -> show (readp input)
 
 sem :: Program -> Maybe Int 
 sem (d, t, e) = app (semantics t) (S (e, d))
+
+

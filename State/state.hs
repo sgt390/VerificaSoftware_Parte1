@@ -8,6 +8,9 @@ app (ST st) s = st s
 --bottom :: State -> (Partial State)
 --bottom = ST (\s -> Undef)
 
+lookup :: Transition (State)
+lookup = ST (\s -> s)
+
 lookupEnv :: Var -> Transition (Maybe Int)
 lookupEnv c = ST (\(S (es, x)) -> case es of 
                                     [] -> Nothing
@@ -22,12 +25,23 @@ lookupFEnv i = ST (\(S (x, fs)) -> case fs of
                                                               then Just (vs,t)
                                                               else app (lookupFEnv i) (S (x,fs')))
 
-alpha :: Var -> Var -> Transition (Maybe Int)
-alpha v1 v2 = ST (\(S (es, x)) -> case es of  -- substitute v2 with v1
-                                    [] -> Nothing
-                                    ((v, n):es') -> if v2 == v
+alpha :: Int -> Var -> (Term -> Transition (Maybe Int)) -> (Term -> Transition (Maybe Int))
+{-
+alpha n v = ST (\(S (es, x)) -> case es of  -- substitute v2 with n
+                                    [] -> Just n
+                                    ((v', n'):es') -> if v' == v
                                                         then Just n
-                                                        else app (alpha v1 v2) (S (es',x)))
+                                                        else app (alpha n v) (S (es',x)))
+-}
+alpha n v st = \v0 -> ST (\s -> app (st v0) (sost s n v))
+sost :: State -> Int -> Var -> State
+sost (S (es, x)) n v = S ((v,n):[e | e <- es, missing e v] , x)
+
+missing :: EqVar -> Var -> Bool
+missing (v, _) v' = if v' == v
+                              then False
+                              else True
+                    
 
 instance Functor Transition where
     fmap f st = ST (\s -> f (app st s))
