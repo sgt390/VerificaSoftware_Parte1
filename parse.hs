@@ -113,19 +113,4 @@ module Parse where
     symbol :: String -> Parser String
     symbol xs = token (string xs) -- match the xs symbol
     
-    opIdentifier :: Parser String
-    opIdentifier = do s <- symbol "=="
-                      return s
-                      <|> do s <- symbol "~="
-                             return s
-                      <|> do s <- symbol ">"
-                             return s
-                      <|> do s <- symbol ">="
-                             return s
-                      <|> do s <- symbol "<"
-                             return s
-                      <|> do s <- symbol "<="
-                             return s
-                
-    
     

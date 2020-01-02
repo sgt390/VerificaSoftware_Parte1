@@ -1,40 +1,18 @@
 module ParseRec where
 import Control.Applicative
 import Parse
+import Types
 ----------------------------------------------------------
 ------------------ REC Syntax definition -----------------
 ----------------------------------------------------------
 ----------------------------------------------------------
-
-type Var = String
-
-data Term
-        = TNum Int                  -- Numbers
-        | TVar Var                  -- Variables
-        | TSum Term Term            -- Sum t1 t2
-        | TSub Term Term            -- Subtract t1 t2
-        | TMul Term Term            -- Multiply t1 t2
-        | TCond Term Term Term      -- cond(t1, t2, t3)
-        | TFun Int [Term]           -- f(t1, ..., tn)
-        deriving Show
-
-
-type Fun = (Int, [Var])             -- fi (x1, ..., xn)
-
-type EqDec = (Fun, Term)            -- function = term
-type Declaration = [EqDec]          --  list of equations (in declaration)
-
-type EqVar = (Var, Int)             -- x = number
-type Env = [EqVar]                  -- list of variable declaration
-
-type Program = (Declaration, Env)   -- declaration with some enviroment
-
 parseREC :: Parser (Program)
-parseREC = do e <- parseEnv
+parseREC = do p <- parseEnv
+              t <- parseTerm
               d <- parseDeclaration
-              return (d, e)
+              return (d, t, p)
 
-parseEnv :: Parser (Env)
+parseEnv :: Parser (VEnv)
 parseEnv = do p <- parseEqVar
               do ps <- parseEnv
                  return (p:ps)
