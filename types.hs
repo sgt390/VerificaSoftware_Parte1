@@ -27,6 +27,4 @@ type Program = (Declaration, Term, VEnv)   -- declaration with some enviroment
 
 -- state
 data State = S (VEnv, Declaration)
-data Partial a = Def a | Undef
-
-newtype Transition a = ST (State -> a)
+data Partial a = Var a | Undef

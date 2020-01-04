@@ -1,6 +1,16 @@
 module Utilities where
 
-safesum :: Maybe Int -> Maybe Int -> Maybe Int
-safesum Nothing _ = Nothing
-safesum _ Nothing = Nothing
-safesum (Just n) (Just m) = Just (n + m)
+import Types
+
+partialSum :: Partial Int -> Partial Int -> Partial Int
+partialSum Undef _ = Undef
+partialSum _ Undef = Undef
+partialSum (Var a) (Var b) = Var (a + b)
+partialSub :: Partial Int -> Partial Int -> Partial Int
+partialSub Undef _ = Undef
+partialSub _ Undef = Undef
+partialSub (Var a) (Var b) = Var (a - b)
+partialMul :: Partial Int -> Partial Int -> Partial Int
+partialMul Undef _ = Undef
+partialMul _ Undef = Undef
+partialMul (Var a) (Var b) = Var (a * b)
