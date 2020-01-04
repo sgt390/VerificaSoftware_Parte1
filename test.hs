@@ -6,6 +6,9 @@
 
 import Control.Monad
 
-ax :: [Int]
-ax = [1,2,3,4,5]
-b = ax >>= \x->[x+1]
+a :: Int -> Maybe Int
+a x = Just (x + 1)
+
+c :: (Maybe Int -> Maybe Int) -> Int -> (Int -> Maybe Int)
+c f 0 = \x -> Just 0
+c f n = f . (c f (n-1))
