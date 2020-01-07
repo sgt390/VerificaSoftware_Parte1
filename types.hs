@@ -29,4 +29,5 @@ data Partial a = Var a | Undef deriving (Show, Eq)
 
 type Env = Var -> Partial Int
 
-type FEnv = [[Partial Int] -> Partial Int]
+type F = [Partial Int] -> Partial Int
+type FEnv = [F]

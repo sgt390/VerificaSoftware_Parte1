@@ -17,3 +17,11 @@ fn f n fenv = f (fn f (n-1) fenv)
 --                    Var n -> g
 --                    Undef -> lub gs params
 
+bottom :: FEnv
+bottom = [\s -> Undef]
+
+
+envt :: VEnv -> Env
+envt ((v, n):venv) = \c -> if c == v
+                                 then Var n
+                                 else envt venv c
