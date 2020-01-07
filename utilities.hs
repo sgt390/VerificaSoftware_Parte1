@@ -14,3 +14,5 @@ partialMul :: Partial Int -> Partial Int -> Partial Int
 partialMul Undef _ = Undef
 partialMul _ Undef = Undef
 partialMul (Var a) (Var b) = Var (a * b)
+
+

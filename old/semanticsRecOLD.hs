@@ -1,7 +1,7 @@
 module SemanticsRecOLD where
 
 import Types
-import State.State
+--import State.State
 import Utilities
 
 semantics :: Term -> Transition (Int)

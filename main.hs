@@ -1,10 +1,10 @@
-module Main1 where
+module Main where
 -- read a file and output the result
 import Parse
 import ParseRec
 import Types
 import SemanticsRec
-import State.State
+--import State.State
 import Fix
 
 -- setup unit-tests
@@ -18,7 +18,21 @@ readp = let [(a,b)] = (parse parseREC inp) in a
 
 debugp = \input -> let [(a,b)] = (parse parseREC input) in show a ++ "_______________________" ++ b
 
-sem :: Program -> Partial Int 
-sem (d, t, e) = (semantics t) (fix (functional d (envt e))) (envt e) -- <<<<<<<<<<<<<<<<<<<<< TODO :)
---sem (d, t, e) = (semantics t) f_demo (envt e) -- <<<<<<<<<<<<<<<<<<<<< TODO :)
+sem' :: Program -> Int -> Partial Int
+sem' (d, t, e) k = (semantics t) (fn (functional d (envt e)) k bottom ) (envt e)
 
+sem :: Program -> Partial Int
+sem p = head [sem' p k | k <- [0..], sem' p k /= Undef]
+
+main = putStrLn (show (sem readp))
+
+
+---------- TODO DELETE
+bottom :: FEnv
+bottom = [\s -> Undef]
+
+
+envt :: VEnv -> Env
+envt ((v, n):venv) = \c -> if c == v
+                                 then Var n
+                                 else envt venv c

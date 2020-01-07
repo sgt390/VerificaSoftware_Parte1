@@ -25,7 +25,7 @@ type VEnv = [EqVar]                  -- list of variable declaration
 
 type Program = (Declaration, Term, VEnv)   -- declaration with some enviroment
 
-data Partial a = Var a | Undef deriving Show
+data Partial a = Var a | Undef deriving (Show, Eq)
 
 type Env = Var -> Partial Int
 

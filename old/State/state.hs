@@ -1,4 +1,4 @@
-module State.State where
+module State where
 
 import Types
 
