@@ -9,16 +9,16 @@ data Term
         | TSub Term Term            -- Subtract t1 t2
         | TMul Term Term            -- Multiply t1 t2
         | TCond Term Term Term      -- cond(t1, t2, t3)
-        | TFun Int [Term]           -- f(t1, ..., tn)
+        | TFun FIndex [Term]           -- f(t1, ..., tn)
         deriving Show
 
 -- syntax
-type Arity = Int
-type FIndex = Int
-type Fun = (Int, [Var])             -- fi (x1, ..., xn)
+data FIndex = FVar Var | FInt Int deriving (Show, Eq)  -- fname (x1, ..., xn)
+type Fun = (FIndex, [Var])
 
 type EqDec = (Fun, Term)            -- function = term
 type Declaration = [EqDec]          --  list of equations (in declaration)
+
 
 type EqVar = (Var, Int)             -- x = number
 type VEnv = [EqVar]                  -- list of variable declaration

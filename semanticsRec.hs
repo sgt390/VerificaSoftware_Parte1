@@ -16,7 +16,7 @@ semantics (TMul t0 t1) = \fenv -> \env -> partialMul (semantics t0 fenv env) (se
 
 semantics (TCond t0 t1 t2) = \fenv -> \env -> cond (semantics t0 fenv env) (semantics t1 fenv env) (semantics t2 fenv env) 
 
-semantics (TFun i ts) = \fenv -> \env ->  (partialIndex fenv i) (semanticsTerms ts fenv env)
+semantics (TFun (FInt i) ts) = \fenv -> \env ->  (partialIndex fenv i) (semanticsTerms ts fenv env)
 
 cond :: Partial Int -> Partial Int -> Partial Int -> Partial Int
 cond Undef _ _ = Undef
@@ -29,7 +29,7 @@ semanticsTerms :: [Term] -> FEnv -> Env -> [Partial Int]
 semanticsTerms [] fenv env = [] 
 semanticsTerms (t:ts) fenv env = (semantics t fenv env) : (semanticsTerms ts fenv env) 
 
-functional :: [((Int, [Var]), Term)] -> Env -> FEnv -> FEnv
+functional :: [((FIndex, [Var]), Term)] -> Env -> FEnv -> FEnv
 functional [] env = \fenv -> []
 functional (((_, inp), t):ds) env = \fenv -> (\params -> semantics t fenv (substs env params inp)) : (functional ds env fenv)
 

@@ -33,18 +33,19 @@ parseDeclaration = do d <- parseEqDec
                          <|> return [d]
 
 parseEqDec :: Parser (EqDec)
-parseEqDec = do f <- parseFun
+parseEqDec = do many (character "(")
+                f <- parseFun
                 character "="
                 t <- parseTerm
+                many (character ")")
                 return (f, t)
 
 parseFun :: Parser (Fun)
-parseFun = do character "f"
-              n <- parseNum
+parseFun = do n <- parseVar
               character "("
               args <- parseArgs
               character ")"
-              return (n, args)
+              return (FVar n, args)
               
 
 parseArgs :: Parser ([Var])
@@ -96,12 +97,11 @@ parseTerm2 = do t <- parseATerm
                 return t
 
 parseFunTerm :: Parser (Term)
-parseFunTerm = do character "f"
-                  n <- parseNum
+parseFunTerm = do n <- parseVar
                   character "("
                   as <- parseArgsTerm
                   character ")"
-                  return (TFun n as)
+                  return (TFun (FVar n) as)
 
 parseArgsTerm :: Parser ([Term])
 parseArgsTerm = do v <- parseTerm
@@ -118,7 +118,7 @@ parseNum = do num <- integer
               return num
 
 -- reserved keywords that cannot be variable names
-recKeywords = ["if", "then", "else", "f"]
+recKeywords = ["if", "then", "else"]
 parseVar :: Parser (Var)
 parseVar = do v <- identifier
               if not (elem v recKeywords)
