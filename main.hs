@@ -6,6 +6,7 @@ import Types
 import SemanticsRec
 import Utilities
 import Fix
+import FunctionRenaming.State
 
 -- inp = "x=2 g (1) f (x) = x+20 g (y) = f(y)" -- simple
 -- inp = "x=2 y=4 x=2 z=70 (g (6)) (f(x)=7) (g(z) = g(z))" -- undending cycle

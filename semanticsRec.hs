@@ -1,7 +1,6 @@
 module SemanticsRec where
 
 import Types
---import State.State
 import Utilities
 
 semantics :: Term -> FEnv -> Env -> Partial Int -- Term implict in the definition

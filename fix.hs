@@ -1,7 +1,6 @@
 module Fix where
 
 import Types
---import State.State
 
 --fix :: (FEnv  -> FEnv) -> FEnv
 --fix f = lub [fn f n bottom | n <- [0..]]
@@ -21,7 +20,7 @@ bottom :: FEnv
 bottom = [\s -> Undef]
 
 
-envt :: VEnv -> Env
+envt :: VEnv -> Env  -- transforms the syntactic variable enviroment into a function
 envt ((v, n):venv) = \c -> if c == v
                                  then Var n
                                  else envt venv c

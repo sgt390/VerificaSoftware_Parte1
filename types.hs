@@ -31,3 +31,6 @@ type Env = Var -> Partial Int
 
 type F = [Partial Int] -> Partial Int
 type FEnv = [F]
+
+type FRState = [FIndex]
+newtype FRTransition a = ST (a -> FRState -> (a, FRState))
