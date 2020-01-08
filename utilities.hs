@@ -2,6 +2,7 @@ module Utilities where
 
 import Types
 import Data.List
+--import Data.Sort
 
 partialSum :: Partial Int -> Partial Int -> Partial Int
 partialSum Undef _ = Undef
@@ -23,7 +24,7 @@ partialIndex lst i = if (length lst) > i then lst!!i else \x->Undef
 
 -- Substitute function names with indexes 
 substFun :: Program -> Program
-substFun p = let ((ds, t, x),s') = substFun' p [] in let (t',_) = substTerm t s' in (ds, t', x) -- ////////////// TODO CHANGE input from p s into (p,s) to remove (let = in)
+substFun p = let ((ds, t, x),s') = substFun' p [] in let (t',_) = substTerm t s' in (orderDeclaration ds, t', x) -- ////////////// TODO CHANGE input from p s into (p,s) to remove (let = in)
 
 substFun' :: Program -> [FIndex] -> (Program, [FIndex])
 substFun' (d:[], t, x) s = let (d', s') = substEqDec d s in ((([d'], t, x), s'))
@@ -52,3 +53,6 @@ substTerms (t:ts) s = let (t', s') = substTerm t s in let (ts', s'') = (substTer
 
 prepend :: [FIndex] -> FIndex -> [FIndex]
 prepend l e = reverse (e:(reverse l))
+
+orderDeclaration :: Declaration -> Declaration
+orderDeclaration d = sortOn (\((FInt a, ts), t) -> a) d
