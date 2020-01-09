@@ -4,40 +4,79 @@ import Data.List
 import Types
 
 app :: FRTransition a -> FRState -> (a , FRState)
-app (FRTransition tr) s = ts s
+app (ST tr) s = tr s
 
 instance Functor FRTransition where
     -- fmap :: (a -> b) -> FRTransition a -> FRTransition b
-    fmap f tr = ST (\inp -> case app tr inp of) -- complete
+    fmap f st = ST (\s -> let (a,s')=app st s in (f a, s'))
 
--- Substitute function names with indexes 
+instance Applicative FRTransition where
+    pure a = ST (\s -> (a, s))
+    -- <*> :: ST (a -> b) -> ST a -> ST b
+    stf <*> sta = ST (\s -> let (f,s')=app stf s in app (fmap f sta) s')
+
+instance Monad FRTransition where
+    return = pure
+    -- >>= :: ST a -> (a -> ST b) -> ST b
+    sta >>= f = ST (\s -> let (a,s')=app sta s in app (f a) s')
+
+rename :: FIndex -> FRTransition FIndex
+rename fi = ST (\s -> case elemIndex fi s of
+                            Just i -> (FInt i, s)
+                            Nothing -> (FInt (length s), prepend s fi))
+
+
 substFun :: Program -> Program
-substFun p = let ((ds, t, x),s') = substFun' p [] in let (t',_) = substTerm t s' in (orderDeclaration ds, t', x) -- ////////////// TODO CHANGE input from p s into (p,s) to remove (let = in)
+substFun p = fst (app (substFun' p) [])
+substFun' :: Program -> FRTransition Program
+substFun' (ds, t, x) = do ds' <- substDecs ds
+                          t' <- substTerm t
+                          return (orderDeclaration ds', t', x)
 
-substFun' :: Program -> [FIndex] -> (Program, [FIndex])
-substFun' (d:[], t, x) s = let (d', s') = substEqDec d s in ((([d'], t, x), s'))
-substFun' (d:ds, t, x) s = let ((ds', _, _),s') = substFun' (ds,t,x) s in let (d', s'') = substEqDec d s' in (((d':ds', t, x), s''))
+
+substDecs :: Declaration -> FRTransition Declaration
+substDecs (d:[]) = do d' <- substEqDec d
+                      return [d']
+
+substDecs (d:ds) = do d' <- substEqDec d
+                      ds' <- substDecs ds
+                      return (d':ds')
 
 
-substEqDec :: EqDec -> [FIndex] -> (EqDec, [FIndex])
-substEqDec ((fname,vs), t) s = let (t', s') = substTerm t s in let (i, s'') = substName fname s' in (((i,vs),t'),s'')
+substEqDec ((fi, vs), t) = do t' <- substTerm t
+                              i <- rename fi
+                              return ((i, vs), t')
 
-substName :: FIndex -> [FIndex] -> (FIndex, [FIndex])
-substName c s = case (elemIndex c s) of
-                        Just i -> (FInt i, s)
-                        Nothing -> (FInt (length s), prepend s c)
+substTerm :: Term -> FRTransition Term
+substTerm (TFun fi ts) = do i <- rename fi
+                            ts' <- substTerms ts
+                            return (TFun i ts')
 
-substTerm :: Term -> [FIndex] -> (Term, [FIndex])
-substTerm (TFun (FVar v) ts) s = let (i,s') = substName (FVar v) s in let (ts',s'') = substTerms ts s' in (TFun i ts', s'')  --- TODO MONADI
-substTerm (TSum (t0) (t1)) s = let (t0',s') = substTerm (t0) s in let (t1',s'') = substTerm (t1) s' in (TSum t0' t1',s'')
-substTerm (TSub (t0) (t1)) s = let (t0',s') = substTerm (t0) s in let (t1',s'') = substTerm (t1) s' in (TSub t0' t1',s'')
-substTerm (TMul (t0) (t1)) s = let (t0',s') = substTerm (t0) s in let (t1',s'') = substTerm (t1) s' in (TMul t0' t1',s'')
-substTerm (TCond (t0) (t1) (t2)) s = let (t0',s') = substTerm (t0) s in let (t1',s'') = substTerm (t1) s' in let (t2',s_'') = substTerm (t2) s'' in (TCond t0' t1' t2',s_'')
-substTerm t s = (t,s)
+substTerm (TSum t0 t1) = do t0' <- substTerm t0
+                            t1' <- substTerm t1
+                            return (TSum t0' t1')
 
-substTerms :: [Term] -> [FIndex] -> ([Term], [FIndex])
-substTerms [] s = ([], s)
-substTerms (t:ts) s = let (t', s') = substTerm t s in let (ts', s'') = (substTerms ts s') in ((t':ts'), s'')
+substTerm (TSub t0 t1) = do t0' <- substTerm t0
+                            t1' <- substTerm t1
+                            return (TSub t0' t1')
+
+
+substTerm (TMul t0 t1) = do t0' <- substTerm t0
+                            t1' <- substTerm t1
+                            return (TMul t0' t1')
+
+substTerm (TCond t0 t1 t2) = do t0' <- substTerm t0
+                                t1' <- substTerm t1
+                                t2' <- substTerm t2
+                                return (TCond t0' t1' t2')
+
+substTerm t = pure t
+
+substTerms :: [Term] -> FRTransition [Term]
+substTerms [] = pure []
+substTerms (t:ts) = do t' <- substTerm t
+                       ts' <- substTerms ts
+                       return (t':ts')
 
 prepend :: [FIndex] -> FIndex -> [FIndex]
 prepend l e = reverse (e:(reverse l))

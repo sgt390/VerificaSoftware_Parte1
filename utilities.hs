@@ -21,3 +21,12 @@ partialMul (Var a) (Var b) = Var (a * b)
 partialIndex :: FEnv -> Int -> F
 partialIndex lst i = if (length lst) > i then lst!!i else \x->Undef
 
+getenv :: Program -> Env
+getenv (_,_,e) = envt e
+
+-- transforms the syntactic variable enviroment into a 
+-- function (the actual variable enviroment)
+envt :: VEnv -> Env  
+envt ((v, n):venv) = \c -> if c == v
+                                 then Var n
+                                 else envt venv c

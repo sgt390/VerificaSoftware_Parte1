@@ -28,7 +28,7 @@ semanticsTerms :: [Term] -> FEnv -> Env -> [Partial Int]
 semanticsTerms [] fenv env = [] 
 semanticsTerms (t:ts) fenv env = (semantics t fenv env) : (semanticsTerms ts fenv env) 
 
-functional :: [((FIndex, [Var]), Term)] -> Env -> FEnv -> FEnv
+functional :: [((FIndex, [Var]), Term)] -> Env -> FEnv -> FEnv  -- functional induced by the declaration
 functional [] env = \fenv -> []
 functional (((_, inp), t):ds) env = \fenv -> (\params -> semantics t fenv (substs env params inp)) : (functional ds env fenv)
 
