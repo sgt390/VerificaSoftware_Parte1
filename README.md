@@ -25,14 +25,30 @@ f<sub>k</sub>(x<sub>1</sub>, ..., x<sub>a<sub>k</sub></sub>) = t<sub>k</sub>
 1. le funzioni sono definite per **dichiarazione**
 2. non si possono definire due funzioni con la stessa function variable
 3. le funzioni possono essere ricorsive
-4. I termini t<sub>i</sub> possono contenere f<sub>i</sub>(ricorsione)
+4. i termini t<sub>i</sub> possono contenere f<sub>i</sub>(ricorsione)
 5. t<sub>i</sub> è la definizione di f<sub>i</sub>
-6. call by name (scelta personale)
+6. call by name
 
+### Esempio di programmi:
+1. Programma semplice
 
+```Python
+x=2 g (1) f (x) = x+20 g (y) = f(y)
+```
 
-            Example (less then)
-            --lt :: a -> a -> Bool
-            lt a b = lt1 (a-b) (a-b)
-            --lt1 :: a -> a -> Bool
-            lt1 a b = if b==0 then False else (if a==0 then True else (lt1 (a+1) (b-1)))
+2. Ciclo infinito:
+
+```Python
+inp = "x=2 (g (6)) (g(z) = 3+g(3+z)+3)
+```
+
+3. Programma su più righe
+
+```Python
+x=2
+y=1
+g(3,z(0))
+f(x,y)=4+y 
+g(s,longvariable)=f(4,h(s)+1) 
+h(p)=if p then 1000 else 1+h(p-1) 
+z(x)=z(y)```
