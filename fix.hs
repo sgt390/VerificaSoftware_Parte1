@@ -2,7 +2,6 @@ module Fix where
 
 import Types
 
-{--
 -- f(f(...(fenv))) n times
 -- non tail-recursive version
 -- This is not tail recursive because f_n'
@@ -11,7 +10,6 @@ import Types
 f_n' :: (FEnv -> FEnv) -> Int -> FEnv -> FEnv
 f_n' f 0 fenv = id fenv
 f_n' f n fenv = f (f_n' f (n-1) fenv)
---}
 
 -- Tail recursive version:
 -- f_n is tail recursive because it is an application

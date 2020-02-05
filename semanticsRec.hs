@@ -3,7 +3,11 @@ module SemanticsRec where
 import Types
 import Utilities
 
-semantics :: Term -> FEnv -> Env -> Partial Int -- Term implict in the definition
+-- Semantics of a single term (call by name)
+-- The result is "Partial Int" because the semantics of a term can be
+-- evaluated into "Undef". This happens when the FEnv was not
+-- fully constructed.
+semantics :: Term -> FEnv -> Env -> Partial Int
 semantics (TNum n) = \fenv -> \env -> Var n
 semantics (TVar x) = \fenv -> \env -> env x
 
@@ -24,17 +28,23 @@ cond n0 n1 n2 = case n0 of
                             Var _ -> n2
                             _ -> Undef
 
+-- semantics of multiple terms given a function enviroment (fenv)
+-- and a variable enviroment (env)                            
 semanticsTerms :: [Term] -> FEnv -> Env -> [Partial Int]
 semanticsTerms [] fenv env = [] 
 semanticsTerms (t:ts) fenv env = (semantics t fenv env) : (semanticsTerms ts fenv env) 
 
-functional :: [((FIndex, [Var]), Term)] -> Env -> FEnv -> FEnv  -- functional induced by the declaration
+-- functional induced by the declaration
+functional :: [((FIndex, [Var]), Term)] -> Env -> FEnv -> FEnv  
 functional [] env = \fenv -> []
 functional (((_, inp), t):ds) env = \fenv -> (\params -> semantics t fenv (substs env params inp)) : (functional ds env fenv)
 
+-- Substitute the variable's value
 subst :: Env -> (Partial Int) -> Var -> Env
 subst env n v = \y -> if y /= v then env y else n
 
+-- substitute multiple variables' values
+-- where variable[i] = value[i]
 substs :: Env -> [Partial Int] -> [Var] -> Env
 substs env [] [] = env
 substs env (n:ns) (v:vs) = substs (subst env n v) ns vs

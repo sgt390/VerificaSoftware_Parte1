@@ -38,8 +38,8 @@ debugp = \input -> let [(a,b)] = (parse parseREC input) in show a ++ "++++++++++
 -- Semantics of the term 't' given an enviroment 'e' and a function enviroment 'd',
 -- given k=maximum number of applications of the function f to itself.
 -- eg. k=4 => f(f(f(Bottom))))
-evalk :: Program -> Int -> Partial Int
-evalk (d, t, e) = \k -> semantics t (f_n f k bottom) env 
+eval_bound :: Program -> Int -> Partial Int
+eval_bound (d, t, e) = \k -> semantics t (f_n f k bottom) env 
                    where env = envt e
                          f = functional d env -- functional induced by d (computed only once)
 
@@ -49,7 +49,7 @@ evalk (d, t, e) = \k -> semantics t (f_n f k bottom) env
 -- is found, "head" returns that value, without computing the rest (lazy evaluation).
 evaluate :: Program -> Partial Int
 evaluate p = head [val | val <- map eval [0..], val /= Undef]
-                where eval = evalk p
+                where eval = eval_bound p
 
 -- Call the function "main" to compute the uncommented program.
 main = putStrLn (show (evaluate (readp)))
