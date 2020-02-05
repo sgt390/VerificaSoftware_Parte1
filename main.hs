@@ -14,7 +14,6 @@ import FunctionRenaming.State
 ---inp = "x=2 (g (6)) (g(z) = 3+g(3+z)+3)" -- undending cycle
 
 inp = "x=2 y=4 x=2 z=70 (f (g(1))) f(x)=7 g(x)=g(x)" -- call by name (g is ignored)
---g(3) = f(4,h(3)+1) = 4 + (h(3)+1) = 4 + (1+(1+(1+1000)) +1) = 1008
 
 {-
 inp = " \
