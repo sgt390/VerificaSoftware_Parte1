@@ -10,10 +10,10 @@ import FunctionRenaming.State
 
 ----------------------------- REC Program Examples -----------------------------
 -- KEEP ONLY ONE UNCOMMENTED --
----inp = "x=2 g (1) f (x) = x+20 g (y) = f(y)" -- simple
+inp = "x=4 main() factorial (x) = if x then 1 else x*factorial(x-1) main() = factorial(x+1)" -- Factorial program
 ---inp = "x=2 (g (6)) (g(z) = 3+g(3+z)+3)" -- undending cycle
 
-inp = "x=2 y=4 x=2 z=70 (f (g(1))) f(x)=7 g(x)=g(x)" -- call by name (g is ignored)
+---inp = "x=2 y=4 x=2 z=70 (f (g(1))) f(x)=7 g(x)=g(x)" -- call by name (g is ignored)
 
 {-
 inp = " \
@@ -44,7 +44,7 @@ evalk (d, t, e) = \k -> semantics t (f_n f k bottom) env
                          f = functional d env -- functional induced by d (computed only once)
 
 -- Compute the least upper bount of the functional induced by the definition of the
--- function enviroment defined in the program p, which its fixed point (one of many).
+-- function enviroment (defined in the program p), which is a fixed point of that functional.
 -- Haskell helps with this task, because as soon as a value different from Undef
 -- is found, "head" returns that value, without computing the rest (lazy evaluation).
 evaluate :: Program -> Partial Int
