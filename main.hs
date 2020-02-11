@@ -51,6 +51,6 @@ evaluate :: Program -> Partial Int
 evaluate p = head [val | val <- map eval [0..], val /= Undef]
                 where eval = eval_bound p
 
--- Call the function "main" to compute the uncommented program.
+-- Call the function "main" to compute the program.
 main = putStrLn (show (evaluate (readp)))
 

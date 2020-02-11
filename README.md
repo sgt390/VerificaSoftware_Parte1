@@ -64,3 +64,9 @@ Where
       1. if $[|t|]_{va}\delta_d\rho=\perp$ then the interpreter does not terminate (with no compiler error);
       2. if $[|t|]_{va}\delta_d\rho=\lfloor n \rfloor \in N_{\perp}$ then terminates and outputs $n$.
 
+### Tail recursion
+Tail call optimisation is a technique to avoid wasting memory on recursive calls. In Haskell, it can be achieved if the recursive function is **tail recursive**. At each call, the stack is discarded and the new accumulator value is returned and used to compute the next step. This way, a function can recur indefinitely.
+
+In the interpeter, tail recursion is used to compute the $LUB$. This way, if $[|t|]_{va}\delta_d\rho=\perp$, then the program will search indefinitely for a value, without wasting memory.
+
+Credits: https://wiki.haskell.org/Tail_recursion
