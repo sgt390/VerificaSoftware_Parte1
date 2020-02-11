@@ -1,10 +1,10 @@
 # VerificaSoftware_Parte1
 Project 17 -- REC language Interpreter (call by name)
 ## Syntax
-### Glossary
+### Meaning of the meta-variables
 1. n \- positive and negative integers
 2. x \- variables
-3. f<sub>i</sub> \- function variable (when writing a REC program, f<sub>i</sub> can be any name)
+3. f<sub>i</sub> \- function variable
 4. a<sub>i</sub> \- **arity** of f<sub>i</sub>
 5. 0=true; n=false if n \neq 0 \- boolean variables
    1. \* \- disjunction
@@ -52,7 +52,15 @@ z(x)=z(y)
 ```
 
 ## Semantics
+The interpreter is based on **call by name**, **denotational semantics**.
+The interpreter *I* is defined as (by the project request):
 
-### Evaluation strategy
+$I(d, t, p)=[|t|]_{va}\delta_d\rho$
 
-### Denotational semantics
+Where
+   1. $d=\{f_i (x_1,..., x_{a_i})=t_{i=1}^n\}$ where $\forall i\in 1...a_n.t_i\in REC$ is the declaration of the program's functions;
+   2. $\rho \in Env_a$ is the variables enviroment;
+   3. $\delta_d=fix(F_d)$ and $F_d$ is the functional induced by $d$:
+      1. if $[|t|]_{va}\delta_d\rho=\perp$ then the interpreter does not terminate (with no compiler error);
+      2. if $[|t|]_{va}\delta_d\rho=\lfloor n \rfloor \in N_{\perp}$ then terminates and outputs $n$.
+
